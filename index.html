@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Student</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet">
+    <script src="./vue.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container-fluid"  id="mainapp">
+
+        <!-- Start Banner -->
+        <div class="row bg-dark "  style="padding: 10px;">
+            <div class="col-12 container" style="display: flex;align-items: baseline;justify-content: space-around;">
+                <a href="#" class='h3 text-light ' @click.prevent='IsMove=false'><span class="text-warning">Online</span> Shopping</a>
+                <div style="display: flex;align-items: baseline;justify-content: space-between;">
+                    <p class="text-light">{{cart.Item.length}}
+                        <template v-if='cart.Item.length==1'>Item</template><template v-else>Items</template> In Cart &
+                        Total Salary : {{TotalPric|currency}}</p>&nbsp; &nbsp;
+                    <button class="btn btn-warning" @click='IsMove=true'>Show Cart</button>
+                </div>
+            </div>
+        </div><!-- End Banner -->
+
+        <!-- Start Cart -->
+        <div class="row justify-content-center" v-if='!IsMove'>
+            <!-- nav Bar -->
+
+            <nav class="navbar justify-content-center navbar-expand-lg navbar-dark bg-dark w-100">
+                <div class="container ">
+                    <a class="navbar-brand text-light"><span class="text-warning">Online</span> Shopping</a>
+                    <button class="navbar-toggler" data-target="#my-nav" data-toggle="collapse" aria-controls="my-nav"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div id="my-nav" class="collapse navbar-collapse">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item ">
+                                <a class="nav-link" href="#" @click.prevent='category="allproduct"'> All Product </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="#" @click.prevent='category="accessoris"'> Accessories </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " href="#" @click.prevent='category="bages"'>Bages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " href="#" @click.prevent='category="makeup"'>Makeup</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!--End nav Bar -->
+            <div class="row container">
+                <div  v-for='product in products' >
+                    <div class=" card text-center" v-if="product.category==category||category=='allproduct'"
+                    style="width: 21rem;" :key='product.id'>
+
+                    <img :src="product.image" class="card-img-top" :alt="product.name">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.name}}</h5>
+                        <p class="card-text text-justify">{{product.description}}</p>
+                    </div>
+                    <div class="card-footer"
+                        style="display: flex;align-items: baseline;justify-content: space-between;">
+                        <p class="badge" style="font-size: 15px;">InStock :
+                            <span
+                                :class='[product.instock>=10?"more":product.instock==0?"none":"less"]'>{{product.instock}}</span>
+                        </p>
+                        <p>Price:<span style="font-weight: bold;">{{product.price|currency}}</span></p>
+                        <button class="btn btn-success" :disabled='product.instock==0' @click='addToCart(product)'>Add
+                            To Cart</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+        <!-- End Cart -->
+        <!-- Start Show Cart Page -->
+        <div class="container" style="min-height: 700px;" v-if='IsMove'>
+            <div class="jumbotron text-center" v-if='cart.Item.length==0'>
+                <h1>Sorry, Your Cart Is Empty ...</h1>
+            </div>
+            <div class="row" v-if='cart.Item.length!=0'>
+                <table class="table table-stripped text-center">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for='(pro,index) in cart.Item'>
+                            <td>{{pro.product.name}}</td>
+                            <td>{{pro.quantity}} &nbsp;&nbsp;&nbsp;<button class="btn btn-success"
+                                    @click='IncreaseQ(pro)' :disabled='pro.product.instock==0'>+</button>
+                                &nbsp;&nbsp;&nbsp;<button class="btn btn-danger"
+                                    @click='decreaseQ(pro,index)'>-</button>
+                            </td>
+                            <td>{{pro.product.price}}
+                            </td>
+                            <td>{{totalPriceForEach(pro)}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: right;">Total Price</td>
+                            <td>{{TotalPric|currency}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: right;">Taxes</td>
+                            <td>{{TotalPric*0.1|currency}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: right;">Final Price</td>
+                            <td>{{TotalPric+TotalPric*0.1|currency}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">
+                                <button class="btn btn-success w-25" @click.stop='confirmShopping'>Buy</button></td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- End Show Cart Page -->
+    </div>
+        <div class="h5 container-fluid bg-dark text-light text-center"  style="padding: 15px; margin: 0;">
+            Copy Right &copy;2020 By Dalia Tarek
+         </div>
+    
+
+    <!-- ******************************* -->
+    <script src="./products.js"></script>
+       
+    <!-- </script> -->
+    <script>
+      
+    var vm = new Vue({
+    el: '#mainapp',
+
+    data: {
+        category: "allproduct",
+        products: products,
+        IsMove: false,
+        cart: {
+            Item: [
+            ]
+        }
+    },
+    filters: {
+        currency: function (value) {
+            var formatter = Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0
+            });
+            return formatter.format(value);
+        }
+    },
+    methods: {
+        checkProduct: function (product) {
+            productValid = [null, -1];
+            for (let i = 0; i < this.cart.Item.length; i++) {
+                if (this.cart.Item[i].product == product) {
+                    productValid = [this.cart.Item[i], i];
+                    break;
+                }
+            }
+            return productValid;
+        },
+        addToCart: function (product) {
+            var returnCheck = this.checkProduct(product);
+            if (returnCheck[0] == null) {
+                this.cart.Item.push({ product: product, quantity: 1 });
+            } else {
+                this.cart.Item[returnCheck[1]].quantity++;
+            }
+            product.instock--;
+        },
+        IncreaseQ: function (pro) {
+            pro.quantity++;
+            pro.product.instock--;
+            console.log(pro)
+        },
+        decreaseQ: function (pro, index) {
+            pro.quantity--;
+            pro.product.instock++;
+            console.log(pro)
+            if (pro.quantity == 0) {
+                this.cart.Item.splice(index, 1);
+            }
+        }, totalPriceForEach: function (pro) {
+            return pro.product.price * pro.quantity;
+        },
+        confirmShopping: function () {
+            this.cart.Item = [];
+            alert('Thank You For Choosing Our Website, Products On The Way To You...');
+            this.IsMove = false;
+        }
+    },
+    computed: {
+        TotalPric: function () {
+            var totalPrice = 0;
+            this.cart.Item.forEach((products) => {
+                totalPrice += products.product.price;
+            });
+            for (let i = 0; i < this.cart.Item.length; i++) {
+                totalPrice += this.cart.Item[i].product.price * (this.cart.Item[i].quantity - 1);
+
+            }
+            return totalPrice
+        }
+
+    }
+});
+
+    </script>
+    <script src="js/JQuery-3.3.1.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.js"></script>
+
+</body>
+
+</html>

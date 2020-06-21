@@ -1,0 +1,29 @@
+body{
+    padding: 0;
+    
+}
+.card {
+    margin: 10px;
+}
+
+.more {
+    color: green;
+}
+
+.less {
+    color: orange;
+}
+
+.none {
+    color: red;
+}
+
+.card {
+    transition: all 2s;
+}
+
+.card:hover {
+    transform: scale(1.025);
+    box-shadow: 10px 10px 10px lightgray;
+    background: -webkit-linear-gradient(top, lightgray, white);
+}
